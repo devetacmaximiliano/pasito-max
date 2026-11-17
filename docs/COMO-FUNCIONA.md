@@ -152,10 +152,13 @@ eso se corrige desde la API; se mitiga con variación.
 El sync de pasos no manda GPS —eso sólo importa para los boosts—, pero la ruta le da
 coherencia al relato y sirve de base para la fase geográfica:
 
-- Ida: Obelisco (`-34.60372,-58.38159`) → Parque Centenario (`-34.60613,-58.43530`),
-  ~5,5 km por Rivadavia y Av. Patricias Argentinas, ~60 minutos.
+- Ida: Plaza San Martín (`-38.00550,-57.54260`) → Puerto (`-38.03350,-57.52150`), ~5,5
+  km por la costanera (Varese, Constitución, escolleras), ~60 minutos.
 - Vuelta: mismo trayecto a las 15:00.
 - Total: ~11 km y ~15.000 pasos, la mitad en cada tramo.
+
+Mar del Plata todavía no aparece entre las ciudades con boosts; los pasos cuentan
+igual, pero las zonas geográficas por ahora están en CABA, GBA y Montevideo.
 
 ### 4.4 Riesgo real
 

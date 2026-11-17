@@ -78,7 +78,7 @@ docker compose exec bot python -m pasito_bot flags      # tope vigente en el ser
 | `PATTERN` | `sessions` | `sessions` = caminatas sueltas; `commute` = ida y vuelta al trabajo; `ramp` = rampa lineal |
 | `COMMUTE_OUT` / `COMMUTE_BACK` | `09:00` / `15:00` | horarios del patrón `commute` |
 | `COMMUTE_MINUTES` | `60` | duración mínima de cada tramo |
-| `COMMUTE_FROM` / `COMMUTE_TO` | Obelisco / Parque Centenario | coordenadas del trayecto |
+| `COMMUTE_FROM` / `COMMUTE_TO` | Centro / Puerto (Mar del Plata) | extremos del trayecto |
 | `DAILY_FRACTION_MIN` / `MAX` | `0.97` / `1.0` | porción del tope que se apunta cada día |
 | `DRY_RUN` | `0` | 1 = no envía |
 

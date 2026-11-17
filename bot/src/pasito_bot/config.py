@@ -115,8 +115,8 @@ def load() -> Config:
         commute_out=_time("COMMUTE_OUT", "09:00"),
         commute_back=_time("COMMUTE_BACK", "15:00"),
         commute_minutes=_int("COMMUTE_MINUTES", 60, minimum=20),
-        commute_from=os.getenv("COMMUTE_FROM", "-34.60372,-58.38159"),
-        commute_to=os.getenv("COMMUTE_TO", "-34.60613,-58.43530"),
+        commute_from=os.getenv("COMMUTE_FROM", "-38.00550,-57.54260"),
+        commute_to=os.getenv("COMMUTE_TO", "-38.03350,-57.52150"),
         dry_run=_bool("DRY_RUN"),
         log_level=os.getenv("LOG_LEVEL", "INFO").upper(),
     )
