@@ -1,0 +1,8 @@
+.env
+.env.test*
+.data-test/
+.venv/
+.buildx/
+__pycache__/
+*.pyc
+dist/

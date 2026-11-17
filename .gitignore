@@ -1,0 +1,9 @@
+.DS_Store
+bot/.env
+bot/dist/
+bot/.venv/
+bot/.buildx/
+bot/.data-test/
+__pycache__/
+*.pyc
+.gh/
