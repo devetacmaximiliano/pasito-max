@@ -32,6 +32,13 @@ def _int(name: str, default: int, minimum: int = 0) -> int:
         raise SystemExit(f"{name} debe ser un entero, no {raw!r}")
 
 
+def _float(name: str, default: float) -> float:
+    try:
+        return float(os.getenv(name, default))
+    except ValueError:
+        raise SystemExit(f"{name} debe ser numérico")
+
+
 def _time(name: str, default: str) -> time:
     raw = os.getenv(name, default).strip()
     try:
@@ -56,6 +63,9 @@ class Config:
     max_burst_steps: int
     steps_per_pasito: int
     cap_override: int
+    pattern: str
+    fraction_min: float
+    fraction_max: float
     dry_run: bool
     log_level: str
     request_timeout: float = 25.0
@@ -94,6 +104,9 @@ def load() -> Config:
         max_burst_steps=_int("MAX_BURST_STEPS", 1500, minimum=100),
         steps_per_pasito=_int("STEPS_PER_PASITO", 1000, minimum=1),
         cap_override=_int("DAILY_CAP_OVERRIDE", 0),
+        pattern=os.getenv("PATTERN", "sessions").strip().lower(),
+        fraction_min=min(1.0, max(0.5, _float("DAILY_FRACTION_MIN", 0.97))),
+        fraction_max=min(1.0, max(0.5, _float("DAILY_FRACTION_MAX", 1.0))),
         dry_run=_bool("DRY_RUN"),
         log_level=os.getenv("LOG_LEVEL", "INFO").upper(),
     )

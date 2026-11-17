@@ -125,7 +125,28 @@ recompensa barata cada 1–3 días; 450 Pasitos/mes si se maxea todos los días.
 - No hay attestation obligatoria.
 - 25 requests en ráfaga: todos 200, sin 429.
 
-### 4.3 Riesgo real
+### 4.3 Por qué el patrón no parece un envío de golpe
+
+El servidor no valida ritmo: acepta 15.000 pasos en un solo `POST`. El riesgo no es la
+cantidad, es la forma. Por eso el bot no manda un bloque diario:
+
+- **Sesiones, no cuota fija**: 6–9 caminatas de 7–34 minutos a 92–126 pasos/minuto, con
+  pausas de 16–48 minutos y más peso en la mañana y la tarde. Entre sesiones no hay
+  tráfico.
+- **Actualizaciones intra-sesión** cada 2–4 minutos, con incrementos de 200–450 pasos:
+  la pendiente entre snapshots se parece a la de alguien caminando.
+- **Días desiguales**: el objetivo diario es 97–100 % del tope y la suma real varía
+  (13,5k–15k), no siempre 15.000 clavados.
+- **Sin saltos grandes**: aun con catch-up, cada envío queda lejos de los ~40.000 que
+  disparan `spike_detected`.
+- **Identidad estable**: `device_id` propio y coherente, `sensor_steps` igual a `steps`
+  y `source = max_both` fijo, como un Android con sensor y Health Connect.
+
+Lo que igual delata a un bot: patrón horario repetido entre días, `device_id` que nunca
+cambia, ausencia de workouts y de señal GPS, y el tope alcanzado todos los días. Nada de
+eso se corrige desde la API; se mitiga con variación.
+
+### 4.4 Riesgo real
 
 1. **Términos**: la cláusula (x) prohíbe “técnicas de simulación de ubicación” y
    “simular actividad física”, y habilita a anular Pasitos o suspender la cuenta ante
@@ -224,8 +245,12 @@ Decisiones concretas:
 - **Sesión**: login por contraseña crea una sesión independiente de la del teléfono
   (Supabase permite varias cadenas de refresh). Hay que **persistir el refresh
   rotativo** o se rompe la cadena.
-- **Ritmo**: 1.000 pasos por lote, 15 lotes, con jitter; el total nunca supera
-  `cap × 1.000`. Se lee el cap de las flags en cada ciclo (hoy 15).
+- **Ritmo**: modelo de sesiones, no de cuota fija. Se generan 6–9 caminatas de 7–34
+  minutos a 92–126 pasos/minuto entre las 07:00 y las 21:30, con pausas de 16–48
+  minutos (más largas al mediodía) y un objetivo diario del 97–100 % del tope. Dentro
+  de cada sesión se actualiza cada 2–4 minutos; entre sesiones, silencio.
+- **Variación**: el plan es determinístico por día y dispositivo, pero distinto en cada
+  fecha; la suma diaria no siempre es exacta (13,5k–15k), como una persona real.
 - **Identidad**: `device_id` UUID estable y `device_brand`/`device_model` realistas,
   guardados en el estado.
 - **Idempotencia**: no reenviar el mismo total; usar `validated_steps` de la respuesta

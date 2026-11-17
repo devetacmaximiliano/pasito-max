@@ -24,8 +24,10 @@ valida. El análisis completo — reglas, anti-fraude, flags y protocolo de boos
    token rotativo.
 2. Lee el tope vigente desde las feature flags del servidor (`daily_pasito_cap`) y
    calcula `cap × 1.000`.
-3. Reparte envíos incrementales dentro de una ventana configurable (07:30–21:30 por
-   defecto) con jitter, respetando que el servidor es monotónico: nunca baja un total.
+3. Simula un día de caminata: 6–9 sesiones de 7–34 minutos a 92–126 pasos/minuto entre
+   la mañana y la tarde, con pausas variables. Actualiza cada 2–4 minutos dentro de una
+   sesión y queda en silencio entre ellas; el servidor es monotónico, nunca baja un
+   total.
 4. Recupera lo que falte si el contenedor estuvo caído y corta a las 23:45.
 5. Los días pasados no acreditan Pasitos, así que sólo trabaja el día en curso.
 
@@ -46,7 +48,7 @@ cd bot && docker compose up -d --build
 docker compose logs -f
 ```
 
-Verificación inmediata sin esperar la rampa:
+Verificación inmediata sin esperar el plan del día:
 
 ```bash
 cd bot

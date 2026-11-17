@@ -39,7 +39,7 @@ docker compose exec bot python -m pasito_bot flags      # tope vigente en el ser
 
 | Comando | Qué hace |
 |---|---|
-| `run` (default) | Bucle 24/7: rampa dentro de la ventana y catch-up si estuvo caído |
+| `run` (default) | Bucle 24/7: plan de caminata del día y catch-up si estuvo caído |
 | `once` | Sincroniza el objetivo del día ya, en tandas de 1.500 |
 | `login` | Fuerza login y guarda la sesión |
 | `flags` | Imprime las feature flags (incluye `daily_pasito_cap`) |
@@ -48,10 +48,13 @@ docker compose exec bot python -m pasito_bot flags      # tope vigente en el ser
 
 ## Funcionamiento
 
-- **Objetivo dinámico**: lee `daily_pasito_cap` de las flags (hoy 15) y calcula
-  `cap × 1.000`. Si el flag no está disponible, usa 15. `DAILY_CAP_OVERRIDE` lo fuerza.
-- **Rampa**: ventana `07:30–21:30` (configurable) repartida en ticks; nunca envía de más
-  ni retrocede (el servidor también es monotónico).
+- **Objetivo dinámico**: lee `daily_pasito_cap` de las flags (hoy 15) y apunta al
+  97–100 % de `cap × 1.000`. Si el flag no está disponible, usa 15.
+  `DAILY_CAP_OVERRIDE` lo fuerza.
+- **Sesiones, no cuota fija**: arma 6–9 caminatas de 7–34 minutos a 92–126
+  pasos/minuto entre las 07:00 y las 21:30, con pausas de 16–48 minutos y más peso en
+  la mañana y la tarde. Dentro de una sesión actualiza cada 2–4 minutos; entre sesiones
+  no manda nada. Nunca retrocede (el servidor es monotónico).
 - **Catch-up**: al arrancar retoma lo que falte del día; si está muy atrasado acelera.
 - **Sesión**: login por contraseña y refresh rotativo persistido en `/data`
   (`0600`). Tolera 401, 429 y 5xx con backoff.
@@ -70,6 +73,8 @@ docker compose exec bot python -m pasito_bot flags      # tope vigente en el ser
 | `TICK_SECONDS` | `600` | cadencia base |
 | `MAX_BURST_STEPS` | `1500` | pasos por envío |
 | `DAILY_CAP_OVERRIDE` | `0` | 0 = leer del servidor |
+| `PATTERN` | `sessions` | `sessions` = caminata simulada; `ramp` = rampa lineal |
+| `DAILY_FRACTION_MIN` / `MAX` | `0.97` / `1.0` | porción del tope que se apunta cada día |
 | `DRY_RUN` | `0` | 1 = no envía |
 
 ## Llevarlo a otra máquina
