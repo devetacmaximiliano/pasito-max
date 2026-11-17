@@ -48,6 +48,9 @@ def build(day: datetime, cfg: Config, nominal: int, device_id: str) -> list[Sess
     if wend <= wstart:
         wend = at(23, 0)
 
+    if cfg.pattern == "commute":
+        return _commute(day, cfg, nominal, rng, at, wstart, wend)
+
     # Cuotas por franja: mañana y tarde pesan más que el mediodía.
     share_a = rng.uniform(0.26, 0.38)
     share_b = rng.uniform(0.14, 0.26)
@@ -95,6 +98,29 @@ def build(day: datetime, cfg: Config, nominal: int, device_id: str) -> list[Sess
         last.budget += add
         last.end += timedelta(minutes=add / pace)
         deficit -= add
+    return sessions
+
+
+def _commute(day, cfg, nominal, rng, at, wstart, wend) -> list[Session]:
+    """Ida y vuelta al trabajo: dos bloques largos, uno a la mañana y otro a la tarde."""
+    start_out = at(cfg.commute_out.hour, cfg.commute_out.minute) + timedelta(minutes=rng.uniform(-5, 6))
+    start_back = at(cfg.commute_back.hour, cfg.commute_back.minute) + timedelta(minutes=rng.uniform(-5, 6))
+
+    share = rng.uniform(0.47, 0.53)
+    out_budget = int(nominal * share / 10) * 10
+    back_budget = nominal - out_budget
+
+    sessions: list[Session] = []
+    for start, budget in ((start_out, out_budget), (start_back, back_budget)):
+        pace = rng.uniform(112, 124)          # ritmo de commuting, sostenido pero humano
+        minutes = max(cfg.commute_minutes, budget / pace)
+        start = max(wstart, start)
+        end = min(wend, start + timedelta(minutes=minutes))
+        sessions.append(Session(start, end, min(budget, int((end - start).total_seconds() / 60 * pace))))
+
+    diff = nominal - sum(x.budget for x in sessions)
+    if diff:
+        sessions[-1].budget += diff
     return sessions
 
 

@@ -132,7 +132,8 @@ cantidad, es la forma. Por eso el bot no manda un bloque diario:
 
 - **Sesiones, no cuota fija**: 6–9 caminatas de 7–34 minutos a 92–126 pasos/minuto, con
   pausas de 16–48 minutos y más peso en la mañana y la tarde. Entre sesiones no hay
-  tráfico.
+  tráfico. Con `PATTERN=commute` son dos bloques de ~60 minutos (09:00 y 15:00), ida y
+  vuelta, mitad del total cada uno.
 - **Actualizaciones intra-sesión** cada 2–4 minutos, con incrementos de 200–450 pasos:
   la pendiente entre snapshots se parece a la de alguien caminando.
 - **Días desiguales**: el objetivo diario es 97–100 % del tope y la suma real varía
@@ -145,6 +146,16 @@ cantidad, es la forma. Por eso el bot no manda un bloque diario:
 Lo que igual delata a un bot: patrón horario repetido entre días, `device_id` que nunca
 cambia, ausencia de workouts y de señal GPS, y el tope alcanzado todos los días. Nada de
 eso se corrige desde la API; se mitiga con variación.
+
+### Ruta de ejemplo (patrón `commute`)
+
+El sync de pasos no manda GPS —eso sólo importa para los boosts—, pero la ruta le da
+coherencia al relato y sirve de base para la fase geográfica:
+
+- Ida: Obelisco (`-34.60372,-58.38159`) → Parque Centenario (`-34.60613,-58.43530`),
+  ~5,5 km por Rivadavia y Av. Patricias Argentinas, ~60 minutos.
+- Vuelta: mismo trayecto a las 15:00.
+- Total: ~11 km y ~15.000 pasos, la mitad en cada tramo.
 
 ### 4.4 Riesgo real
 

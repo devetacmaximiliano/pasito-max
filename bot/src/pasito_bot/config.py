@@ -66,6 +66,11 @@ class Config:
     pattern: str
     fraction_min: float
     fraction_max: float
+    commute_out: time
+    commute_back: time
+    commute_minutes: int
+    commute_from: str
+    commute_to: str
     dry_run: bool
     log_level: str
     request_timeout: float = 25.0
@@ -107,6 +112,11 @@ def load() -> Config:
         pattern=os.getenv("PATTERN", "sessions").strip().lower(),
         fraction_min=min(1.0, max(0.5, _float("DAILY_FRACTION_MIN", 0.97))),
         fraction_max=min(1.0, max(0.5, _float("DAILY_FRACTION_MAX", 1.0))),
+        commute_out=_time("COMMUTE_OUT", "09:00"),
+        commute_back=_time("COMMUTE_BACK", "15:00"),
+        commute_minutes=_int("COMMUTE_MINUTES", 60, minimum=20),
+        commute_from=os.getenv("COMMUTE_FROM", "-34.60372,-58.38159"),
+        commute_to=os.getenv("COMMUTE_TO", "-34.60613,-58.43530"),
         dry_run=_bool("DRY_RUN"),
         log_level=os.getenv("LOG_LEVEL", "INFO").upper(),
     )

@@ -73,16 +73,30 @@ class Runner:
         if self._cfg.pattern == "ramp":
             return []
         sessions = planner.load(state.extra.get("plan"))
-        if sessions and state.extra.get("plan_day") == state.day:
+        if (
+            sessions
+            and state.extra.get("plan_day") == state.day
+            and state.extra.get("plan_pattern") == self._cfg.pattern
+        ):
             return sessions
         sessions = planner.build(now, self._cfg, target, state.device_id)
         state.extra["plan"] = planner.dump(sessions)
         state.extra["plan_day"] = state.day
+        state.extra["plan_pattern"] = self._cfg.pattern
         self._store.save()
-        log.info(
-            "plan del día: %s sesiones, %s pasos (nominal %s)",
-            len(sessions), sum(s.budget for s in sessions), target,
-        )
+        if self._cfg.pattern == "commute":
+            log.info("ruta simulada: %s → %s (ida y vuelta)", self._cfg.commute_from, self._cfg.commute_to)
+            log.info(
+                "plan del día: ida %s–%s, vuelta %s–%s, %s pasos (nominal %s)",
+                sessions[0].start.strftime("%H:%M"), sessions[0].end.strftime("%H:%M"),
+                sessions[-1].start.strftime("%H:%M"), sessions[-1].end.strftime("%H:%M"),
+                sum(s.budget for s in sessions), target,
+            )
+        else:
+            log.info(
+                "plan del día: %s sesiones, %s pasos (nominal %s)",
+                len(sessions), sum(s.budget for s in sessions), target,
+            )
         return sessions
 
     def _desired(self, now: datetime, target: int, sessions: list[Session]) -> int:

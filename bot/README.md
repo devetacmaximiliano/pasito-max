@@ -51,10 +51,12 @@ docker compose exec bot python -m pasito_bot flags      # tope vigente en el ser
 - **Objetivo dinámico**: lee `daily_pasito_cap` de las flags (hoy 15) y apunta al
   97–100 % de `cap × 1.000`. Si el flag no está disponible, usa 15.
   `DAILY_CAP_OVERRIDE` lo fuerza.
-- **Sesiones, no cuota fija**: arma 6–9 caminatas de 7–34 minutos a 92–126
-  pasos/minuto entre las 07:00 y las 21:30, con pausas de 16–48 minutos y más peso en
-  la mañana y la tarde. Dentro de una sesión actualiza cada 2–4 minutos; entre sesiones
-  no manda nada. Nunca retrocede (el servidor es monotónico).
+- **Sesiones, no cuota fija**: con `PATTERN=sessions` arma 6–9 caminatas de 7–34
+  minutos a 92–126 pasos/minuto entre las 07:00 y las 21:30, con pausas variables.
+  Con `PATTERN=commute` hace dos bloques de ~60 minutos a las 09:00 y a las 15:00, como
+  ida y vuelta al trabajo, y reparte el total mitad y mitad. Dentro de una sesión
+  actualiza cada 2–4 minutos; entre sesiones no manda nada. Nunca retrocede (el
+  servidor es monotónico).
 - **Catch-up**: al arrancar retoma lo que falte del día; si está muy atrasado acelera.
 - **Sesión**: login por contraseña y refresh rotativo persistido en `/data`
   (`0600`). Tolera 401, 429 y 5xx con backoff.
@@ -73,7 +75,10 @@ docker compose exec bot python -m pasito_bot flags      # tope vigente en el ser
 | `TICK_SECONDS` | `600` | cadencia base |
 | `MAX_BURST_STEPS` | `1500` | pasos por envío |
 | `DAILY_CAP_OVERRIDE` | `0` | 0 = leer del servidor |
-| `PATTERN` | `sessions` | `sessions` = caminata simulada; `ramp` = rampa lineal |
+| `PATTERN` | `sessions` | `sessions` = caminatas sueltas; `commute` = ida y vuelta al trabajo; `ramp` = rampa lineal |
+| `COMMUTE_OUT` / `COMMUTE_BACK` | `09:00` / `15:00` | horarios del patrón `commute` |
+| `COMMUTE_MINUTES` | `60` | duración mínima de cada tramo |
+| `COMMUTE_FROM` / `COMMUTE_TO` | Obelisco / Parque Centenario | coordenadas del trayecto |
 | `DAILY_FRACTION_MIN` / `MAX` | `0.97` / `1.0` | porción del tope que se apunta cada día |
 | `DRY_RUN` | `0` | 1 = no envía |
 
