@@ -7,3 +7,4 @@ bot/.data-test/
 __pycache__/
 *.pyc
 .gh/
+SETUP-PRIVADO.md
